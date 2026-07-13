@@ -1,18 +1,89 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Planetry Motion</title>
-    <script src="libraries/p5.js" type="text/javascript"></script>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Keplerian Planetary Orrery</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Panel -->
+        <aside class="control-panel">
+            <header class="app-header">
+                <span class="badge"><i class="fas fa-globe"></i> Astrophysics & Math</span>
+                <h1>3D Solar Orrery</h1>
+                <p>An interactive, procedural 3D solar system simulator modeling Newton's laws and Keplerian orbits.</p>
+            </header>
 
-    <script src="libraries/p5.dom.js" type="text/javascript"></script>
-    <script src="libraries/p5.sound.js" type="text/javascript"></script>
-    <script src="sketch.js" type="text/javascript"></script>
-    <script src="star.js" type="text/javascript"></script>
-    <script src="planet.js" type="text/javascript"></script>
-    <script src="satelite.js" type="text/javascript"></script>
-    <style> body {padding: 0; margin: 0;} canvas {vertical-align: top;} </style>
-  </head>
-  <body>
-  </body>
+            <!-- Time Speed Slider -->
+            <div class="slider-item">
+                <div class="slider-header">
+                    <span>Orrery Speed:</span>
+                    <span id="speedVal" class="slider-val">1.0x</span>
+                </div>
+                <input type="range" id="speedSlider" min="0.1" max="10.0" step="0.1" value="1.0">
+            </div>
+
+            <!-- Gravity Factor Slider -->
+            <div class="slider-item">
+                <div class="slider-header">
+                    <span>Gravitational Constant (G):</span>
+                    <span id="gravityVal" class="slider-val">1.5</span>
+                </div>
+                <input type="range" id="gravitySlider" min="0.5" max="4.0" step="0.1" value="1.5">
+            </div>
+
+            <!-- Orbit Trails Toggle -->
+            <div class="control-group">
+                <label><i class="fas fa-chart-line"></i> Orbital Trajectories:</label>
+                <button id="trailBtn" class="btn btn-toggle active"><i class="fas fa-ring"></i> Show Orbit Trails</button>
+            </div>
+
+            <!-- Camera View Select -->
+            <div class="control-group">
+                <label for="viewSelect"><i class="fas fa-video"></i> Camera Viewpoint:</label>
+                <select id="viewSelect" class="form-select">
+                    <option value="perspective" selected>Perspective System (Free Orbit)</option>
+                    <option value="top">Helocentric Top-Down (Grid)</option>
+                    <option value="side">Ecliptic Side Profile</option>
+                </select>
+            </div>
+
+            <!-- Mathematical Information Board -->
+            <section class="math-board">
+                <header class="board-header">
+                    <h4><i class="fas fa-square-root-alt"></i> Orbital Mechanics</h4>
+                </header>
+                <div class="board-content">
+                    <div id="physicsInfo" class="info-content">
+                        <code>F_g = -G · (M·m / r²) · r̂</code><br>
+                        <code>T² = (4π² / G·M) · a³</code>
+                        <p>Simulates gravity integration using Euler-Cromer vectors, rendering orbits directly in 3D WebGL space.</p>
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+        <!-- Canvas Container -->
+        <main class="canvas-container">
+            <div id="p5-canvas-holder"></div>
+            <!-- Canvas HUD -->
+            <div class="canvas-hud">
+                <span id="canvasStats"><i class="fas fa-sync"></i> Camera: Free Orbit | Rendering: 3D WebGL</span>
+                <span id="canvasTips">Left-click and drag on the canvas to rotate the 3D viewport. Scroll to zoom.</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- p5.js Lib -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <!-- Code -->
+    <script src="sketch.js"></script>
+</body>
 </html>

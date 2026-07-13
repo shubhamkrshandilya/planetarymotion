@@ -1,0 +1,296 @@
+/* CSS Variable System */
+:root {
+    --bg-dark: #07080c;
+    --panel-bg: rgba(13, 17, 26, 0.75);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --primary-color: #3b82f6; /* Blue */
+    --text-color: #e2e8f0;
+    --text-muted: #8492a6;
+    --font-sans: 'Inter', sans-serif;
+    --font-mono: 'Fira Code', monospace;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-color);
+    font-family: var(--font-sans);
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Layout App Container */
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Sidebar Control Panel */
+.control-panel {
+    width: 360px;
+    background-color: var(--panel-bg);
+    border-right: 1px solid var(--border-color);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    gap: 1.5rem;
+    overflow-y: auto;
+    z-index: 10;
+}
+
+/* Header design */
+.app-header .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background-color: rgba(59, 130, 246, 0.15);
+    color: var(--primary-color);
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 0.25rem 0.6rem;
+    border-radius: 9999px;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.app-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+}
+
+.app-header p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Control Elements */
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.form-select {
+    width: 100%;
+    padding: 0.6rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    transition: var(--transition);
+    height: 2.5rem;
+}
+
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Sliders */
+.slider-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.slider-val {
+    color: var(--primary-color);
+    font-family: var(--font-mono);
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    transition: var(--transition);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.3);
+    background: #fff;
+}
+
+/* Toggle Buttons */
+.btn {
+    width: 100%;
+    padding: 0.65rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    transition: var(--transition);
+}
+
+.btn-toggle {
+    background-color: rgba(255, 255, 255, 0.03);
+    color: var(--text-muted);
+    border-color: var(--border-color);
+    justify-content: flex-start;
+}
+
+.btn-toggle.active {
+    background-color: rgba(59, 130, 246, 0.15);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Mathematical Information Board */
+.math-board {
+    margin-top: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.board-header {
+    background-color: rgba(255, 255, 255, 0.02);
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.board-header h4 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.board-content {
+    padding: 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.board-content code {
+    display: block;
+    font-family: var(--font-mono);
+    color: #a0aec0;
+    margin-bottom: 0.25rem;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.board-content p {
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* Canvas Container */
+.canvas-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: var(--bg-dark);
+}
+
+#p5-canvas-holder {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    line-height: 0;
+}
+
+/* Canvas HUD Overlay */
+.canvas-hud {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    right: 2rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background-color: rgba(7, 8, 12, 0.85);
+    border: 1px solid var(--border-color);
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+#canvasStats {
+    font-family: var(--font-mono);
+}
+
+/* Scrollbar Customization for sidebar */
+.control-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.control-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.control-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.control-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
