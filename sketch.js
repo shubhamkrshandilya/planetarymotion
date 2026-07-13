@@ -5,6 +5,9 @@ let viewMode = 'perspective';
 // Sliders & Buttons
 let speedSlider, gravitySlider, trailBtn, viewSelect;
 
+// Textures Look-up Table
+let textures = {};
+
 // Celestial Bodies
 let sun;
 let planets = [];
@@ -12,6 +15,18 @@ let planets = [];
 // Stars background
 let starCount = 300;
 let starField = [];
+
+function preload() {
+  // Load local texture JPEG assets
+  textures.sun = loadImage('images/sun.jpg');
+  textures.mercury = loadImage('images/mercury.jpg');
+  textures.venus = loadImage('images/venus.jpg');
+  textures.earth = loadImage('images/earth.jpg');
+  textures.mars = loadImage('images/mars.jpg');
+  textures.jupiter = loadImage('images/jupiter.jpg');
+  textures.saturn = loadImage('images/saturnmap.jpg');
+  textures.moon = loadImage('images/moon.jpg');
+}
 
 function setup() {
   const holder = document.getElementById('p5-canvas-holder');
@@ -46,29 +61,29 @@ function setup() {
   }
   
   // Define central massive star (Sun)
-  // Constructor: (mass, size, color)
-  sun = new CelestialBody(1500, 36, color(45, 95, 100)); // Yellow hue
+  // Constructor: (mass, size, color, hasRings, textureAsset)
+  sun = new CelestialBody(1500, 36, color(45, 95, 100), false, textures.sun);
   
   // Define orbiting planets
-  // Constructor: (mass, size, dist, speed, color, hasRings)
+  // Constructor: (mass, size, dist, speed, color, hasRings, textureAsset)
   // Distances and speeds are computed to satisfy Keplerian circular orbit velocity: v = sqrt(G * M / r)
   let G_init = 1.5;
   let M_sun = 1500;
   
   // 1. Mercury (Rust Orange)
-  planets.push(new CelestialBody(5, 6, 75, calculateOrbitSpeed(G_init, M_sun, 75), color(20, 80, 85), false));
+  planets.push(new CelestialBody(5, 6, 75, calculateOrbitSpeed(G_init, M_sun, 75), color(20, 80, 85), false, textures.mercury));
   
   // 2. Venus (Soft Amber)
-  planets.push(new CelestialBody(10, 10, 115, calculateOrbitSpeed(G_init, M_sun, 115), color(40, 60, 90), false));
+  planets.push(new CelestialBody(10, 10, 115, calculateOrbitSpeed(G_init, M_sun, 115), color(40, 60, 90), false, textures.venus));
   
   // 3. Earth (Cyan Blue)
-  planets.push(new CelestialBody(12, 11, 160, calculateOrbitSpeed(G_init, M_sun, 160), color(200, 85, 80), false));
+  planets.push(new CelestialBody(12, 11, 160, calculateOrbitSpeed(G_init, M_sun, 160), color(200, 85, 80), false, textures.earth));
   
   // 4. Mars (Red Crimson)
-  planets.push(new CelestialBody(8, 8, 205, calculateOrbitSpeed(G_init, M_sun, 205), color(10, 90, 85), false));
+  planets.push(new CelestialBody(8, 8, 205, calculateOrbitSpeed(G_init, M_sun, 205), color(10, 90, 85), false, textures.mars));
   
   // 5. Jupiter (Banded Beige)
-  planets.push(new CelestialBody(45, 18, 255, calculateOrbitSpeed(G_init, M_sun, 255), color(35, 45, 75), true));
+  planets.push(new CelestialBody(45, 18, 255, calculateOrbitSpeed(G_init, M_sun, 255), color(35, 45, 75), true, textures.jupiter));
 }
 
 function draw() {
@@ -77,10 +92,10 @@ function draw() {
   
   // 1. Setup lights (WebGL shaders)
   // Ambient glow in deep space
-  ambientLight(270, 40, 15);
+  ambientLight(270, 40, 20);
   
   // Directional backlight to catch sphere curves
-  directionalLight(0, 0, 35, 0.5, 0.5, -0.5);
+  directionalLight(0, 0, 40, 0.5, 0.5, -0.5);
   
   // Intense point light emanating from the Sun's center
   pointLight(45, 20, 100, 0, 0, 0); 
@@ -105,10 +120,17 @@ function draw() {
   drawStarField();
   
   // 4. Update & Draw Sun
+  push();
   noStroke();
-  fill(45, 80, 100);
-  emissiveMaterial(45, 80, 100); // Emits its own light
+  emissiveMaterial(45, 20, 100); // Glowing effect
+  if (textures.sun) {
+    texture(textures.sun);
+  } else {
+    fill(45, 80, 100);
+  }
+  rotateY(frameCount * 0.005);
   sphere(sun.size);
+  pop();
   
   // 5. Update & Draw orbiting planets
   let dt = (deltaTime / 1000) * (speedSlider ? parseFloat(speedSlider.value()) : 1.0);
@@ -146,11 +168,12 @@ function drawStarField() {
 // Celestial Body (Planet) Class
 // ----------------------------------------------------
 class CelestialBody {
-  constructor(mass, size, distOrX, ySpeed, colorVal, hasRings) {
+  constructor(mass, size, distOrX, ySpeed, colorVal, hasRings, textureAsset) {
     this.mass = mass;
     this.size = size;
     this.color = colorVal;
     this.hasRings = hasRings;
+    this.texture = textureAsset;
     
     // Position vector (placed along X axis initially)
     if (ySpeed === undefined) {
@@ -219,13 +242,34 @@ class CelestialBody {
     
     noStroke();
     
-    // Shading material calculations
-    fill(this.color);
-    specularMaterial(this.color); // Reflects specular point lights
-    shininess(12);
+    if (this.texture) {
+      texture(this.texture);
+    } else {
+      fill(this.color);
+      specularMaterial(this.color);
+      shininess(12);
+    }
     sphere(this.size);
     
-    // 3. Draw Planet Rings (if applicable, e.g., Saturn)
+    // 3. Draw Earth's Moon Sub-orbit (if this body is Earth)
+    if (this.texture === textures.earth) {
+      push();
+      // Orbiting angle
+      let moonAngle = frameCount * 0.03;
+      let mDist = 20;
+      translate(mDist * cos(moonAngle), 0, mDist * sin(moonAngle));
+      
+      if (textures.moon) {
+        texture(textures.moon);
+      } else {
+        fill(0, 0, 75);
+        specularMaterial(0, 0, 75);
+      }
+      sphere(this.size * 0.35); // Moon is ~35% size of Earth
+      pop();
+    }
+    
+    // 4. Draw Planet Rings (if applicable, e.g., Saturn)
     if (this.hasRings) {
       push();
       // Tilt the rings slightly
